@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2 align="center">以图搜图</h2>
+
+<form method="POST" enctype="multipart/form-data" action="{% url 'searchImage' %}">
+    {% csrf_token %}
+    <input type="file" name="myfiles">
+    <input type="submit" value="搜！"><br>
+
+    {% include 'messages.html' %}
+
+    {% for pic in pics %}
+        <input type="checkbox" value="{{pic.headImg}}" name="deleteList">
+        <p>/media/{{pic.headImg}}</p>
+        <br>
+    {% endfor %}
+</form>
+
+{% endblock %}

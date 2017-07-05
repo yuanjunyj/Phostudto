@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2 align="center">Upload</h2>
+ 
+<form method="POST" enctype="multipart/form-data" action="{% url 'profile' %}">
+  {% csrf_token %}
+  <input type="file" name="myfiles" multiple="">
+  <input type="submit" value="Submit">
+</form>
+{% include 'messages.html' %}
+
+<form method="POST" action="{% url 'deletePhoto' %}">
+	{% csrf_token %}
+	<input type="submit" value="Delete"><br>
+	{% for pic in pics %}
+		<input type="checkbox" value="{{pic.headImg}}" name="deleteList">
+		<p>/media/{{pic.headImg}}</p>
+		<br>
+	{% endfor %}
+</form>
+
+{% endblock %}

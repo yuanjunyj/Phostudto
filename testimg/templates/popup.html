@@ -1,0 +1,24 @@
+<!-- Popup -->
+<div id="myModal" class="modal">
+	<span class="close" onclick="document.getElementById('myModal').style.display='none'">&times;</span>
+	<img class="modal-content" id="origin">
+	<div id="caption" name='captions'></div>
+	<div style="text-align:center">
+		<input name="labels_text" id="labels_text1">
+		<input name="labels_text" id="labels_text2">
+		<input name="labels_text" id="labels_text3">
+		<button class="btn" id="save_labels">save labels</button>
+	</div>
+	<div style="text-align:center">
+		{%for label in labels%}
+			<button class="btn" name="labels_button" id = {{label}}>{{label}}</button>
+		{%endfor%}
+	</div>
+	<button id="gray">Gray</button>
+	<button id="binary">Binary</button>
+	<button id="gaussian">Gaussian</button>
+	<button id="zoom">Zoom</button>
+	<button id="rotate">Rotate</button>
+	<img class="modal-content" id="new">
+	<button id="save_new">Save Photo</button>
+</div>

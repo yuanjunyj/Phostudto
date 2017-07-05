@@ -99,6 +99,8 @@ ENV/
 
 # mypy
 .mypy_cache/
-media/photos/
+media/
 testimg/migrations/
 .idea/
+mysite/settings.py
+testimg/image
