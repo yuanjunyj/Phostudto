@@ -10,6 +10,8 @@ from .str_to_list import *
 from .dirlist import *
 import os
 
+from .tools import calculate_pic, get_thread_num, search_image
+import threading
 
 # Create your views here.
 
@@ -49,8 +51,21 @@ def uploadPhoto(request):
             imageData.image.save(str(user.id) + '/' + user.current_visiting_path + file.name, file)
             imageData.save()
 
+        t = threading.Thread(target=calculate_pic, args=(files, auth.get_user(request)))
+        t.start()
         #messages.info(request, '图片上传成功~')  
     return redirect('profile')
+
+def SearchPhoto(request):
+    pics = None
+    if request.method == "POST":
+        files = request.FILES.getlist('myfiles')
+        if len(files) == 0:
+            messages.info(request, '请选择图片')
+        else:
+            pics = search_image(files[0])
+    # print(pics)
+    return render(request, 'searchPhoto.html', {'pics': pics})
 
 def deletePhoto(request):
     if request.method == "POST":

@@ -16,6 +16,7 @@ urlpatterns = [
 	url(r'^uploadPhoto$', views.uploadPhoto, name='uploadPhoto'),
 	url(r'^deletePhoto$', views.deletePhoto, name='deletePhoto'),
 	url(r'^filterPhoto$', views.filterPhoto, name='filterPhoto'),
+	url(r'^searchPhoto$', views.SearchPhoto, name='searchPhoto'),
 	url(r'^profile$', views.profile, name='profile'),
 	url(r'^makedir$', views.makedir, name='makedir'),
 
