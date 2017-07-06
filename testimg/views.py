@@ -57,7 +57,7 @@ def uploadPhoto(request):
     return redirect('profile')
 
 def SearchPhoto(request):
-    pics = None
+    pics = []
     if request.method == "POST":
         files = request.FILES.getlist('myfiles')
         if len(files) == 0:
@@ -65,7 +65,21 @@ def SearchPhoto(request):
         else:
             pics = search_image(files[0])
     # print(pics)
-    return render(request, 'searchPhoto.html', {'pics': pics})
+    user = auth.get_user(request)
+    pics_is_liked = []
+    if user.is_authenticated():
+        like_list = decode_str(user.like_list)
+        for i in range(0, len(pics)):
+            if pics[i].id in like_list:
+                pics_is_liked.append((pics[i], 1))
+            else:
+                pics_is_liked.append((pics[i], 0))
+        labels = decode_str(user.labels)
+    else:
+        for i in range(0, len(pics)):
+            pics_is_liked.append((pics[i], -1))
+        labels =[]
+    return render(request, 'searchPhoto.html', {'pics': pics_is_liked, 'labels': labels})
 
 def deletePhoto(request):
     if request.method == "POST":
