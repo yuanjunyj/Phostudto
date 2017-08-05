@@ -12,7 +12,7 @@ class User(AbstractUser):
 	like_list = models.CharField(max_length=100, default='', blank=True)
 	labels = models.CharField(max_length=100, default='', blank=True)
 	current_visiting_path = models.CharField(max_length=100, default='')
-
+	favor_list = models.CharField(max_length=500, default='', blank=True)
 
 def get_image_path(instance, filename):
 	return os.path.join('photos', filename).replace('\\','/')
@@ -21,6 +21,7 @@ class ImageData(models.Model):
 	image = models.ImageField(upload_to = get_image_path)
 	username = models.ForeignKey('User')
 	path = models.CharField(max_length=1024, default='')
+	filename = models.CharField(max_length=256, default='')
 	likes = models.IntegerField(default = 0)
 	created_at = models.DateTimeField(default = timezone.now)
 	img_labels = models.CharField(max_length = 100, default = '', blank = True)

@@ -1,18 +1,25 @@
-/* 触发弹窗图片的样式 */
-#myImg {
+﻿/* 触发弹窗图片的样式 */
+.myImg {
     border-radius: 5px;
-    cursor: pointer;
-    transition: 0.3s;
+    width: auto;
+    height: auto;
+    margin: 10px;
+    overflow: hidden;
+    cursor: pointer;    
+    transition: all 0.6s; 
 }
  
-#myImg:hover {opacity: 0.7;}
+.myImg:hover {
+    opacity: 0.7;
+    transform: scale(0.9); 
+}
  
 /* 弹窗背景 */
 .modal {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    padding-top: 50px; /* Location of the box */
+    z-index: 9999; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
     left: 0;
     top: 0;
     width: 100%; /* Full width */
@@ -27,7 +34,7 @@
     margin: auto;
     display: block;
     width: 80%;
-    max-width: 500px;
+    max-width: 700px;
 }
  
 /* 文本内容 */
@@ -61,26 +68,107 @@
 }
  
 /* 关闭按钮 */
-.close {
+.close{
     position: absolute;
-    top: 15px;
+    top: 80px;
     right: 35px;
     color: #f1f1f1;
     font-size: 40px;
     font-weight: bold;
     transition: 0.3s;
 }
-
+#previous-picture{
+    position: absolute;
+    border: 10px;
+    top: 300px;
+    left: 30px;
+    color: #696969;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+#next-picture{
+    position: absolute;
+    top: 300px;
+    right: 30px;
+    border: 10px;
+    float: right;
+    color: #696969;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+#gray, #binary, #gaussian, #shrink, #enlarge, #rotate90, #rotate180, #rotate270, #save_new{
+    color: #696969;
+    font-size: 20px;
+    font-weight: normal;
+    transition: 0.3s;
+    margin-left: 10px;
+}
 .close:hover,
-.close:focus {
+.close:focus,
+#save_new:hover,
+#save_new:focus,
+#binary:hover,
+#binary:focus,
+#gaussian:hover,
+#gaussiann:focus,
+#shrink:hover,
+#shrink:focus,
+#enlarge:hover,
+#enlarge:focus,
+#rotate90:hover,
+#rotate90:focus,
+#rotate180:hover,
+#rotate180:focus,
+#rotate270:hover,
+#rotate270:focus,
+#gray:hover,
+#gray:focus,
+#previous-picture:hover,
+#previous-picture:focus,
+#next-picture:hover,
+#next-picture:focus {
     color: #bbb;
     text-decoration: none;
     cursor: pointer;
 }
+
 
 /* 小屏幕中图片宽度为 100% */
 @media only screen and (max-width: 700px){
     .modal-content {
         width: 100%;
     }
+}
+
+/* 图片标签 */
+.img-labels{
+    margin-top: 30px;
+}
+
+.labels-in-caption{
+    margin-left: 0px;
+}
+
+/* 复选框，全选按钮以及删除确认 */
+
+#checkbox,
+#delete,
+#selectAll,
+#filters_button
+{
+    display: none;
+}
+
+/* 圆形按钮 */
+body{margin:40px;}
+.btn-circle {
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  padding: 6px 0;
+  font-size: 12px;
+  line-height: 1.428571429;
+  border-radius: 15px;
 }

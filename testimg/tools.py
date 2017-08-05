@@ -58,6 +58,9 @@ def calculate_pic(files, user):
     global graph
     global thread_num
 
+    if len(files) == 0:
+        return None
+
     lock = threading.Lock()
     lock.acquire()
     try:
@@ -72,6 +75,7 @@ def calculate_pic(files, user):
         try:
             img = Image.open("media/photos/" + str(user.id) + '/' + user.current_visiting_path + file.name)
         except IOError:
+            pic_feature_224.append([[[0, 0, 0] for i in range(224)] for i in range(224)])
             pass
         else:
             img = img.convert("RGB")
@@ -86,7 +90,7 @@ def calculate_pic(files, user):
         # print(str_temp)
         temp_obj = ImageData.objects.filter(image="photos/" + str(user.id) + '/'
                                                   + user.current_visiting_path + files[i].name)
-        if len(temp_obj) != 0:
+        if len(temp_obj) != 0: 
             temp_obj = temp_obj[0]
             temp_obj.feature = str_temp
             temp_obj.save()
@@ -104,13 +108,13 @@ def search_image(file):
     global graph
 
     pic_feature_224 = []
-    print(file)
 
     parser = ImageFile.Parser()
     for chunk in file.chunks():
         parser.feed(chunk)
     img_origin = parser.close()
 
+    img_origin = img_origin.convert("RGB")
     img = numpy.array(img_origin)
     img = numpy.array([[y[::-1] for y in x] for x in img])
     img = cv2.resize(img, (224, 224), interpolation=cv2.INTER_AREA)
@@ -121,8 +125,8 @@ def search_image(file):
         final_feature = feature_model.predict(pic_feature_224_array)
     ImageData_list = [Str2List(x.feature) for x in list(ImageData.objects.all()) if x.feature is not None]
     if len(ImageData_list) == 0:
-        return None
+        return []
     else:
         tree = BallTree(ImageData_list, leaf_size=2, metric='euclidean')
-        dist, ind = tree.query(final_feature[0], k=5)
+        dist, ind = tree.query(final_feature[0], k=9)
         return [list(ImageData.objects.all())[i] for i in ind[0]]

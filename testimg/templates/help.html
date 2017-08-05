@@ -1,0 +1,41 @@
+{% extends 'base_boot.html' %}
+{% block content %}
+{% load static %}
+<div class="container">
+<h1 class="text-center text-primary">欢迎来到Phostudto<small><del>(Photoshop+Visualstudio)</del></small></h1>
+<h3 class="text-center">这里有豪华的用户体验，下面是功能介绍以及小贴士</h3>
+<h3 class="text-center">编辑完后的新图需要下拉才能看到</h3>
+<h3 class="text-center text-warning">新上传和点赞最多的图片会被公开<small><del>(所以上传一些随便的图片时要冷静呀喂)</del></small></h3>
+<h2 class="text-left text-primary">你将体验的功能有</h2>
+<h3>
+<ol style="line-height:2">
+    <li>主页：浏览图片，点赞，收藏，弹窗level1</li>
+    <li>个人中心:
+        <ol>
+            <li>my album:在这里可以进行图片管理，支持上传图片、按标签过滤图片、侧边栏文件管理系统以及弹窗level2</li>
+            <li>lables manage:在这里可以进行标签的管理，对标签进行增删</li>
+            <li>my favors:在这里可以看到收藏的所有图片
+        </ol>
+    </li>
+    <li>以图搜图:在这里支持以图搜图功能</li>
+</ol>
+</h3>
+<h2 class="text-left text-primary">你获得的小贴士有</h2>
+<h3>
+<ol style="line-height:2">
+    <li>大部分功能仅在注册并登录后开放</li>
+    <li>弹窗level2中可以选择图片的标签，但是图片的标签需要在labels manage中增加</li>
+    <li>以及弹窗level2中的图片处理操作需要下拉才能看到处理后的图，同时因为固定了图片宽度的原因导致放大和缩小不能在弹窗里显现出来<small><del>(并不是功能Bug)</del></small></li>
+    <li>处理之后的图片是可以保存的，按钮在下方</li>
+    <li>欢迎尝试一下侧边栏文件系统功能<small>全放在根目录真的很乱的说</small></li>
+    <li>因加入人工智能(障)可能导致以图搜图不能很快搜到刚刚上传的图</li>
+</ol>
+</h3>
+
+</div>
+
+<h2 class="text-right"><small><del>文明访问，拒绝炸库，从我做起......</del></small></h2>
+<p class="text-center">
+    powered by Yuan Jun, Yuan Hao, Fang Chenguang
+</p>
+{% endblock %}

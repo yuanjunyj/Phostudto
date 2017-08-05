@@ -1,4 +1,4 @@
-var imgs = document.getElementsByName('myImgs');
+var imgs = document.getElementsByClassName('content-img');
 var modal = document.getElementById("myModal");
 var modalImg = document.getElementById("origin");
 var pic = document.getElementById("new");
@@ -6,12 +6,15 @@ var captionText = document.getElementById("caption");
 var span = document.getElementsByClassName("close")[0];
 var save_new = document.getElementById("save_new");
 
-var labels_text = document.getElementsByName("labels_text");
 var labels_button = document.getElementsByName("labels_button");
+var label_is_choosed = new Array();
 
 var new_str = new Array();
 var is_saved = new Array();
 var mode_select;
+var present_showing_img = -1;
+
+
 
 for (var i=0; i<imgs.length; i++)
 {
@@ -21,7 +24,7 @@ for (var i=0; i<imgs.length; i++)
 		modalImg.src = this.src;
 		captionText.innerHTML = this.alt;
 		save_new.style.display = "none";
-		for (var j=0; j<5; ++j)
+		for (var j=0; j<8; ++j)
 		{
 			is_saved[j] = false;
 			new_str[j] = "";
@@ -29,13 +32,26 @@ for (var i=0; i<imgs.length; i++)
 		$.get("getPicLabels?&path=" + captionText.innerHTML, function(data)
 		{
 			labels = data.split(",");
-			for(i = 0; i < labels.length; i++)
+			for (var j=0; j<labels_button.length; j++)
 			{
-				if(labels[i] != '')
-					labels_text[i].value = labels[i];
-				//console.log(labels[i]);
+				if(labels.indexOf(labels_button[j].innerHTML) >= 0)
+				{
+					label_is_choosed[j] = true;
+					labels_button[j].setAttribute("class", "btn btn-primary");
+				}
+				else
+				{
+					label_is_choosed[j] = false;		
+					labels_button[j].setAttribute("class", "btn btn-default");
+				}
 			}
 		})
+		for(var j=0; j<imgs.length; j++)
+		{
+			if(this.src == imgs[j].src)
+				present_showing_img = j;
+		}
+		
 	}
 }
 
@@ -44,57 +60,162 @@ for(var i=0; i<labels_button.length; i++)
 {
 	var button = labels_button[i];
 	button.onclick = function(){
-		var flag = 0;
-		for(var j=0; j<3; j++)
-		{
-			if(labels_text[j].value == this.innerHTML)
-			{
-				flag = 1;
+		var j = 0;
+		for(j = 0; j<labels_button.length; j++)
+			if(this == labels_button[j])
 				break;
-			}
-		}
-		if(flag == 0)
+		console.log(j);
+		if(label_is_choosed[j] == true)
 		{
-			for(var j=0; j<3; j++)
+			label_is_choosed[j] = false;
+			labels_button[j].setAttribute("class", "btn btn-default");
+			var inputStr = "chooseLabels?label=" + this.innerHTML + "&path=" + captionText.innerHTML;
+			$.get(inputStr, function(data){})
+			console.log(inputStr);
+		}
+		else
+		{
+			var has_choosen_num = 0;
+			for(var k=0; k<labels_button.length; k++)
 			{
-				if(!labels_text[j].value)
-				{
-					labels_text[j].value = this.innerHTML
-					break;
-				}
+				if(label_is_choosed[k] == true)
+					has_choosen_num ++;
+			}
+			if(has_choosen_num < 3)
+			{
+				label_is_choosed[j] = true;
+				labels_button[j].setAttribute("class", "btn btn-primary");
+				var inputStr = "chooseLabels?label=" + this.innerHTML + "&path=" + captionText.innerHTML;
+				$.get(inputStr, function(data){})
+				console.log(inputStr);
+			}
+			else
+			{
+				alert("3 labels for a photo at most")
 			}
 		}
+		//console.log('111');
+		
 	}
 }
 
-//save-labels button
-var save_labels_button = document.getElementById("save_labels");
-save_labels_button.onclick = function(){
-	var inputStr = "chooseLabels?label0=" + labels_text[0].value +
-				   "&label1=" + labels_text[1].value+
-				   "&label2=" + labels_text[2].value+
-				   "&path=" + captionText.innerHTML;
-	console.log(inputStr);
-	$.get(inputStr, function(data){
-		alert("save labels successfully!")	
-	})
-}
+
 
 span.onclick = function() { 
 	modal.style.display = "none";
 	pic.src = "";
 	pic.style.display = "none";
-	
 	save_new.style.display = "none";
-	for (var j=0; j<5; ++j)
+	for (var j=0; j<8; ++j)
 	{
 		if (!is_saved[j])
 		{
-			$.get("deleteTempImg?path=" + new_str[j], function(data,status){})
+			$.get("deleteTempImg?path=" + new_str[j], function(data,status){});
 		}
 	}
 	location.reload();
 }
+
+var previous_picture = document.getElementById("previous-picture");
+var next_picture = document.getElementById("next-picture");
+previous_picture.onclick = function(){
+	if(present_showing_img == 0)
+		return;
+	present_showing_img -= 1;
+	//delete tempimg
+	for (var j=0; j<8; ++j)
+	{
+		if (!is_saved[j])
+		{
+			$.get("deleteTempImg?path=" + new_str[j], function(data,status){});
+			is_saved[j] = 0;
+		}
+	}
+
+	//delete processed picture
+	mode_select = -1;
+	for(var j=0; j<8; j++)
+	{
+		new_str[j] = "";
+	}
+
+	//transfer to new picture
+	
+	modalImg.src = imgs[present_showing_img].src;
+	captionText.innerHTML = imgs[present_showing_img].alt;
+	save_new.style.display = "none";
+	pic.style.display = "none";
+	for (var j=0; j<8; ++j)
+	{
+		is_saved[j] = false;
+		new_str[j] = "";
+	}
+	$.get("getPicLabels?&path=" + captionText.innerHTML, function(data)
+	{
+		labels = data.split(",");
+			for (var j=0; j<labels_button.length; j++)
+			{
+				if(labels.indexOf(labels_button[j].innerHTML) >= 0)
+				{
+					label_is_choosed[j] = true;
+					labels_button[j].setAttribute("class", "btn btn-primary");
+				}
+				else
+				{
+					label_is_choosed[j] = false;		
+					labels_button[j].setAttribute("class", "btn btn-default");
+				}
+			}
+	})
+}
+next_picture.onclick = function(){
+	if(present_showing_img == imgs.length - 1)
+		return;
+	present_showing_img += 1;
+	console.log(present_showing_img);
+	for (var j=0; j<8; ++j)
+	{
+		if (!is_saved[j])
+		{
+			$.get("deleteTempImg?path=" + new_str[j], function(data,status){});
+			is_saved[j] = 0;
+		}
+	}
+//delete processed picture
+	mode_select = -1;
+	for(var j=0; j<8; j++)
+	{
+		new_str[j] = "";
+	}
+	//transfer to new picture
+	modalImg.src = imgs[present_showing_img].src;
+	captionText.innerHTML = imgs[present_showing_img].alt;
+	save_new.style.display = "none";
+	pic.style.display = "none";
+	for (var j=0; j<8; ++j)
+	{
+		is_saved[j] = false;
+		new_str[j] = "";
+	}
+	$.get("getPicLabels?&path=" + captionText.innerHTML, function(data)
+	{
+		labels = data.split(",");
+			for (var j=0; j<labels_button.length; j++)
+			{
+				if(labels.indexOf(labels_button[j].innerHTML) >= 0)
+				{
+					label_is_choosed[j] = true;
+					labels_button[j].setAttribute("class", "btn btn-primary");
+				}
+				else
+				{
+					label_is_choosed[j] = false;		
+					labels_button[j].setAttribute("class", "btn btn-default");
+				}
+			}
+	})
+}
+
 
 var gray = document.getElementById("gray");
 gray.onclick = function() {
@@ -149,11 +270,11 @@ gaussian.onclick = function() {
 	save_new.style.display = "block";
 }
 
-var zoom = document.getElementById("zoom");
-zoom.onclick = function() {
+var shrink = document.getElementById("shrink");
+shrink.onclick = function() {
 	if (new_str[3] == '')
 	{
-		$.get("imageProcess?path=" + captionText.innerHTML + "&mode=zoom", function(data,status){
+		$.get("imageProcess?path=" + captionText.innerHTML + "&mode=shrink", function(data,status){
 			pic.src = new_str[3] = data;
 		})
 	}
@@ -167,11 +288,11 @@ zoom.onclick = function() {
 	save_new.style.display = "block";
 }
 
-var rotate = document.getElementById("rotate");
-rotate.onclick = function() {
+var enlarge = document.getElementById("enlarge");
+enlarge.onclick = function() {
 	if (new_str[4] == '')
 	{
-		$.get("imageProcess?path=" + captionText.innerHTML + "&mode=rotate", function(data,status){
+		$.get("imageProcess?path=" + captionText.innerHTML + "&mode=enlarge", function(data,status){
 			pic.src = new_str[4] = data;
 		})
 	}
@@ -181,6 +302,61 @@ rotate.onclick = function() {
 	}
 	pic.src = new_str[4];
 	mode_select = 4;
+	pic.style.display = "block";
+	save_new.style.display = "block";
+}
+
+
+var rotate90 = document.getElementById("rotate90");
+rotate90.onclick = function() {
+	if (new_str[5] == '')
+	{
+		$.get("imageProcess?path=" + captionText.innerHTML + "&mode=rotate90", function(data,status){
+			pic.src = new_str[5] = data;
+		})
+	}
+	else
+	{
+		pic.src = new_str[5];
+	}
+	pic.src = new_str[5];
+	mode_select = 5;
+	pic.style.display = "block";
+	save_new.style.display = "block";
+}
+
+var rotate180 = document.getElementById("rotate180");
+rotate180.onclick = function() {
+	if (new_str[6] == '')
+	{
+		$.get("imageProcess?path=" + captionText.innerHTML + "&mode=rotate180", function(data,status){
+			pic.src = new_str[6] = data;
+		})
+	}
+	else
+	{
+		pic.src = new_str[6];
+	}
+	pic.src = new_str[6];
+	mode_select = 6;
+	pic.style.display = "block";
+	save_new.style.display = "block";
+}
+
+var rotate270 = document.getElementById("rotate270");
+rotate270.onclick = function() {
+	if (new_str[7] == '')
+	{
+		$.get("imageProcess?path=" + captionText.innerHTML + "&mode=rotate270", function(data,status){
+			pic.src = new_str[7] = data;
+		})
+	}
+	else
+	{
+		pic.src = new_str[7];
+	}
+	pic.src = new_str[7];
+	mode_select = 7;
 	pic.style.display = "block";
 	save_new.style.display = "block";
 }

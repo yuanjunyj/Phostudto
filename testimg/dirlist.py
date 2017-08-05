@@ -13,7 +13,3 @@ def dirlist(rootdir):
 	if tmp != '':
 		tmp = '(' + tmp[:-1] + ')'
 	return tmp
-
-
-if __name__ == '__main__':
-	print(dirlist("D:/photos"))
