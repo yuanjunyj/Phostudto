@@ -1,0 +1,148 @@
+{% extends 'base_boot.html' %}
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'profile/img.css' %}" type="text/css">
+
+<div class="container">
+    <h2 align="center">Search Results</h2>
+<div class="my-content"id="masonry">
+    {% for pic, is_liked, is_favored, num, label0, label1, label2 in pics %}
+        {%if num == 0%}
+        <div class="row" >
+            <div class="col-md-4 box">
+                <div class="thumbnail">
+                    <img src="/media/{{pic.image}}" alt="/media/{{pic.image}}" class="content-img">
+                    <div class="caption"  style="text-align:center;">
+                        <h5>{{pic.path}}{{pic.filename}}</h5>
+                        <p>
+                            <div class="labels-in-caption">
+                                {%if label0 != ''%}
+                                    <span class="label label-primary img-labels">{{label0}}</span>
+                                {%endif%}                                
+                                {%if label1 != ''%}
+                                    <span class="label label-primary img-labels">{{label1}}</span>
+                                {%endif%}                               
+                                 {%if label2 != ''%}
+                                    <span class="label label-primary img-labels">{{label2}}</span>
+                                {%endif%}
+                            </div>
+                        </p>
+                        <div class="btn-group">
+                            <button type="button" id = "{{pic.id}}" class="btn btn-default" name ="like-button">
+                                {%if is_liked == 1%}
+                                    <span class="glyphicon glyphicon-heart" style="color:hotpink" aria-hidden="true">&nbsp;{{pic.likes}}</span>
+                                {%else%}
+                                    <span class="glyphicon glyphicon-heart" aria-hidden="true"> {{pic.likes}}</span>
+                                {%endif%}
+                            </button>
+                            <button type="button" class="btn btn-default" name="favor-button" id = "{{pic.id}}">
+                                {%if is_favored == 1%}
+                                    <span class='glyphicon glyphicon-ok' style='color:blue' aria-hidden='true'>&nbsp;favored</span>
+                                {%else%}
+                                    <span class="glyphicon glyphicon-star" aria-hidden="true">&nbsp;favor</span>
+                                {%endif%}
+                            </button>
+                        </div>   
+                    </div>
+                </div>
+            </div>
+        {%else%}
+            {%if num == 1%}
+            <div class="col-md-4 box">
+                <div class="thumbnail">
+                    <img src="/media/{{pic.image}}" alt="/media/{{pic.image}}" class="content-img">
+                    <div class="caption"  style="text-align:center;">
+                        <h5>{{pic.path}}{{pic.filename}}</h5>
+                        <p>
+                            <div class="labels-in-caption">
+                                {%if label0 != ''%}
+                                    <span class="label label-primary img-labels">{{label0}}</span>
+                                {%endif%}                                
+                                {%if label1 != ''%}
+                                    <span class="label label-primary img-labels">{{label1}}</span>
+                                {%endif%}                               
+                                 {%if label2 != ''%}
+                                    <span class="label label-primary img-labels">{{label2}}</span>
+                                {%endif%}
+                            </div>
+                        </p>
+                        <div class="btn-group">
+                            <button type="button" id = "{{pic.id}}" class="btn btn-default" name ="like-button">
+                                {%if is_liked == 1%}
+                                    <span class="glyphicon glyphicon-heart" style="color:hotpink" aria-hidden="true">&nbsp;{{pic.likes}}</span>
+                                {%else%}
+                                    <span class="glyphicon glyphicon-heart" aria-hidden="true"> {{pic.likes}}</span>
+                                {%endif%}
+                            </button>
+                            <button type="button" class="btn btn-default" name="favor-button" id = "{{pic.id}}">
+                                {%if is_favored == 1%}
+                                    <span class='glyphicon glyphicon-ok' style='color:blue' aria-hidden='true'>&nbsp;favored</span>
+                                {%else%}
+                                    <span class="glyphicon glyphicon-star" aria-hidden="true">&nbsp;favor</span>
+                                {%endif%}
+                            </button>
+                        </div>   
+                    </div>
+                </div>
+            </div>
+            {%else%}
+            <div class="col-md-4 box">
+                <div class="thumbnail">
+                    <img src="/media/{{pic.image}}" alt="/media/{{pic.image}}" class="content-img">
+                    <div class="caption"  style="text-align:center;">
+                        <h5>{{pic.path}}{{pic.filename}}</h5>
+                        <p>
+                            <div class="labels-in-caption">
+                                {%if label0 != ''%}
+                                    <span class="label label-primary img-labels">{{label0}}</span>
+                                {%endif%}                                
+                                {%if label1 != ''%}
+                                    <span class="label label-primary img-labels">{{label1}}</span>
+                                {%endif%}                               
+                                 {%if label2 != ''%}
+                                    <span class="label label-primary img-labels">{{label2}}</span>
+                                {%endif%}
+                            </div>
+                        </p>
+                        <div class="btn-group">
+                            <button type="button" id = "{{pic.id}}" class="btn btn-default" name ="like-button">
+                                {%if is_liked == 1%}
+                                    <span class="glyphicon glyphicon-heart" style="color:hotpink" aria-hidden="true">&nbsp;{{pic.likes}}</span>
+                                {%else%}
+                                    <span class="glyphicon glyphicon-heart" aria-hidden="true"> {{pic.likes}}</span>
+                                {%endif%}
+                            </button>
+                            <button type="button" class="btn btn-default" name="favor-button" id = "{{pic.id}}">
+                                {%if is_favored == 1%}
+                                    <span class='glyphicon glyphicon-ok' style='color:blue' aria-hidden='true'>&nbsp;favored</span>
+                                {%else%}
+                                    <span class="glyphicon glyphicon-star" aria-hidden="true">&nbsp;favor</span>
+                                {%endif%}
+                            </button>
+                        </div>   
+                    </div>
+                </div>
+            </div>
+            </div>
+            {%endif%}
+        {%endif%}
+    {% endfor %}
+</div>
+</div>
+{% include 'popup_for_index.html' %}
+
+<script type="text/javascript" src="{% static 'profile/popup_for_index.js' %}" ></script>
+<script type="text/javascript" src="{% static 'like/like.js' %}" ></script>
+<script type="text/javascript" src="{%static 'base/imagesloaded.pkgd.min.js'%}"></script>
+<script type="text/javascript" src="{%static 'base/masonry.pkgd.min.js'%}"></script>
+
+
+<script>
+$('#masonry').imagesLoaded(function() {
+$('#masonry').masonry({
+itemSelector: '.box',
+});
+});
+</script>
+
+{% endblock %}

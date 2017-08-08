@@ -1,24 +1,27 @@
 <!-- Popup -->
 <div id="myModal" class="modal">
+	<div class="show-picture">
 	<span class="close" onclick="document.getElementById('myModal').style.display='none'">&times;</span>
+	<a id="previous-picture" >&lt;</a>
 	<img class="modal-content" id="origin">
-	<div id="caption" name='captions'></div>
-	<div style="text-align:center">
-		<input name="labels_text" id="labels_text1">
-		<input name="labels_text" id="labels_text2">
-		<input name="labels_text" id="labels_text3">
-		<button class="btn" id="save_labels">save labels</button>
+	<a id="next-picture" >&gt;</a>
 	</div>
+
+	<div id="caption" name='captions'></div>
+
 	<div style="text-align:center">
 		{%for label in labels%}
-			<button class="btn" name="labels_button" id = {{label}}>{{label}}</button>
+			<button name="labels_button" id = "{{label}}">{{label}}</button>
 		{%endfor%}
 	</div>
-	<button id="gray">Gray</button>
-	<button id="binary">Binary</button>
-	<button id="gaussian">Gaussian</button>
-	<button id="zoom">Zoom</button>
-	<button id="rotate">Rotate</button>
+	<a id ="gray">Gray</a>
+	<a id ="binary">Binary</a>
+	<a id ="gaussian">Gaussian</a>
+	<a id ="shrink">Shrink</a>
+	<a id ="enlarge">Enlarge</a><br>
+	<a id ="rotate90">Rotate90</a>
+	<a id ="rotate180">Rotate180</a>
+	<a id ="rotate270">Rotate270</a>
 	<img class="modal-content" id="new">
-	<button id="save_new">Save Photo</button>
+	<a id ="save_new">Save Photo</a>
 </div>

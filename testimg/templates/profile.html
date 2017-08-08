@@ -1,70 +1,242 @@
-{% extends 'base.html' %}
-{% load bootstrap3	 %}
+{% extends 'base_boot.html' %}
+{% load bootstrap3 %}
 {% block content %}
 {% load static %}
-<link rel="stylesheet" href="{% static 'profile/img.css' %}" type="text/css">
 
-<h2 align="center">My Album</h2>
-
-<form method="POST" enctype="multipart/form-data" action="{% url 'uploadPhoto' %}">
-  {% csrf_token %}
-  <input type="file" name="myfiles" multiple="">
-  <button id="Upload">Upload</button><br>
-</form>
 {% include 'messages.html' %}
 
-<form method="POST" action="{% url 'filterPhoto' %}">
-	{% csrf_token %}
-	<select id="labels">
-		<option value="null"></option>
-	{% for label in labels %}
-		<option value={{label}}>{{label}}</option>
-	{% endfor %}
-	</select>
-	<button id="Filter">Filter</button><br>
-</form>
-
-<form method="POST" action="{% url 'makedir' %}">
-	{% csrf_token %}
-	<input type="text" name="dirname" />
-	<button id="Makedir">New folder</button><br>
-</form>
-
-<div class="dropdown">
-    <button type="button" class="btn dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown">主题
-        <span class="caret"></span>
-    </button>
-    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-    {% for label in labels %}
-        <li role="presentation">
-            <a role="menuitem" tabindex="-1" href="#">{{label}}</a>
-        </li>
-	{% endfor %}
-    </ul>
-</div>
 
 
+<link rel="stylesheet" type="text/css" href="{% static 'sidebar/css/component.css' %}" />
+<script src="{% static 'sidebar/js/modernizr.custom.js' %}"></script>
 
+<div id="st-container" class="st-container">            
+    <nav class="st-menu st-effect-13" id="menu-13">
+        <h2>Navigation</h2>
+        <ul>    
+            <form method="POST" action="{% url 'operatedir' %}">
+            {% csrf_token %}
+                <div class="row">
+                    <div class="col-lg-6">
+                    <div class="container">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-addon" id="basic-addon3">{% for ff in path %}{{ff}}/{% endfor %}</span>
+                            <input type="text" class="form-control" default="folder" name="dirname" placeholder="Folder name"
+                            onmouseover="this.style.backgroundColor='WhiteSmoke'"
+                            onmouseout="this.style.backgroundColor='#ffffff'"
+                            style="width:200px;">
+                        </div>
+                        <div class="btn-group btn-group-xs">
+                            <button type="submit" class="btn btn-default" name="makedir">Create Folder</button>
+                            <button type="submit" class="btn btn-default" name="deldir">Delete Folder</button>
+                        </div>   
+                    </div>         
+                    </div>
+                </div>
+            </form>
+        </ul>
+        <br/>
+        <ul>
+            <div id="tree">
+            <input type="hidden" value="{{menutree}}" id="menutree"/>
+            <script src="{% static 'profile/tree.js' %}" type="text/javascript"></script>
+            <script>
+                buildMenu();
+                binding();
+            </script>
+            </div>
+        </ul>
+    </nav>
+    <div class="clearfix">
+        <div id="st-trigger-effects" class="column">
+            <button class="btn btn-default btn-circle" data-effect="st-effect-13">
+            <span class="glyphicon glyphicon-chevron-down"></span></button>
+        </div>
+    </div><!-- /main -->
+    <!-- content push wrapper -->
+    <div class="st-pusher">
+        <div class="st-content"><!-- this is the wrapper for the content -->
+            <div class="st-content-inner"><!-- extra div for emulating position:fixed of the menu -->
 
+                <link rel="stylesheet" href="{% static 'profile/img.css' %}" type="text/css">
 
+                <div class="container">
+                    <h2 align="center">My Album</h2>
 
-<form method="POST" action="{% url 'deletePhoto' %}">
-	{% csrf_token %}
-	
-	<button id="Delete">Delete</button><br>
+                    <form method="POST" enctype="multipart/form-data" action="{% url 'uploadPhoto' %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <input type="file" name="myfiles" multiple="">
+                        </div>
 
-		{% for pic, is_liked in pics %}
-			<input type="checkbox" value="{{pic.image}}" name="deleteList">
-			<img id="myImg" name="myImgs" src="/media/{{pic.image}}" alt="/media/{{pic.image}}" width="100" height="100">
-			<button id ="{{pic.id}}" name="like">{{pic.likes}}</button>
-			<button>&hearts;</button>
-			<br>
-		{% endfor %}
-</form>
+                        <div class="form-group">
+                            <button class="btn btn-primary" id="Upload">Upload</button>
+                        </div>
+                    </form>
+
+                    <div class="btn-toolbar">
+                        <button id="Filter" class="btn btn-default">Filter</button>
+                        <div class="btn-group">
+                        {%for label in labels%}
+                            <button id="filters_button" class="btn btn-default" name="filters_button" value = "{{label}}">{{label}}</button>
+                        {%endfor%}
+                        </div>
+                    </div>
+
+                    <div class="btn-toolbar">
+                        <button id="Choose" class="btn btn-default">Choose</button>
+                        <button id="selectAll" class="btn btn-default">Select All</button>
+                        <form id="deletePhoto" method="POST" action="{% url 'deletePhoto' %}">
+                            {% csrf_token %}
+                            <input id="delete" class="btn btn-danger" type="submit" value="Delete">
+                        </form>
+                    </div>
+
+                    <div id = "masonry" >
+                        {% for pic, is_liked, is_favored, num, label0, label1, label2 in pics %}
+                            {%if num == 0%}
+                            <div class="row" >
+                                <div class="col-md-4 box">
+                                    <div class="thumbnail">
+                                    <input id="checkbox" type="checkbox" value="{{pic.image}}" name="deleteList" form="deletePhoto">
+                                        <img src="/media/{{pic.image}}" alt="/media/{{pic.image}}" class="content-img">
+                                        <div class="caption"  style="text-align:center;">
+                                            <p>
+                                                <div class="labels-in-caption">
+                                                    {%if label0 != ''%}
+                                                        <span class="label label-primary img-labels">{{label0}}</span>
+                                                    {%endif%}                                
+                                                    {%if label1 != ''%}
+                                                        <span class="label label-primary img-labels">{{label1}}</span>
+                                                    {%endif%}                               
+                                                    {%if label2 != ''%}
+                                                        <span class="label label-primary img-labels">{{label2}}</span>
+                                                    {%endif%}
+                                                </div>
+                                            </p>
+                                            <div class="btn-group">
+                                                <button type="button" id = "{{pic.id}}" class="btn btn-default" name ="like-button">
+                                                    {%if is_liked == 1%}
+                                                        <span class="glyphicon glyphicon-heart" style="color:hotpink" aria-hidden="true">&nbsp;{{pic.likes}}</span>
+                                                    {%else%}
+                                                        <span class="glyphicon glyphicon-heart" aria-hidden="true"> {{pic.likes}}</span>
+                                                    {%endif%}
+                                                </button>
+                                                <button type="button" class="btn btn-default" name="favor-button" id = "{{pic.id}}">
+                                                    {%if is_favored == 1%}
+                                                        <span class='glyphicon glyphicon-ok' style='color:blue' aria-hidden='true'>&nbsp;favored</span>
+                                                    {%else%}
+                                                        <span class="glyphicon glyphicon-star" aria-hidden="true">&nbsp;favor</span>
+                                                    {%endif%}
+                                                </button>
+                                            </div>   
+                                        </div>
+                                    </div>
+                                </div>
+                            {%else%}
+                                {%if num == 1%}
+                                <div class="col-md-4 box">
+                                    <div class="thumbnail">
+                                    <input id="checkbox" type="checkbox" value="{{pic.image}}" name="deleteList" form="deletePhoto">
+                                        <img src="/media/{{pic.image}}" alt="/media/{{pic.image}}" class="content-img">
+                                        <div class="caption"  style="text-align:center;">
+                                            <p>
+                                                <div class="labels-in-caption">
+                                                    {%if label0 != ''%}
+                                                        <span class="label label-primary img-labels">{{label0}}</span>
+                                                    {%endif%}                                
+                                                    {%if label1 != ''%}
+                                                        <span class="label label-primary img-labels">{{label1}}</span>
+                                                    {%endif%}                               
+                                                    {%if label2 != ''%}
+                                                        <span class="label label-primary img-labels">{{label2}}</span>
+                                                    {%endif%}
+                                                </div>
+                                            </p>
+                                            <div class="btn-group">
+                                                <button type="button" id = "{{pic.id}}" class="btn btn-default" name ="like-button">
+                                                    {%if is_liked == 1%}
+                                                        <span class="glyphicon glyphicon-heart" style="color:hotpink" aria-hidden="true">&nbsp;{{pic.likes}}</span>
+                                                    {%else%}
+                                                        <span class="glyphicon glyphicon-heart" aria-hidden="true"> {{pic.likes}}</span>
+                                                    {%endif%}
+                                                </button>
+                                                <button type="button" class="btn btn-default" name="favor-button" id = "{{pic.id}}">
+                                                    {%if is_favored == 1%}
+                                                        <span class='glyphicon glyphicon-ok' style='color:blue' aria-hidden='true'>&nbsp;favored</span>
+                                                    {%else%}
+                                                        <span class="glyphicon glyphicon-star" aria-hidden="true">&nbsp;favor</span>
+                                                    {%endif%}
+                                                </button>
+                                            </div>   
+                                        </div>
+                                    </div>
+                                </div>
+                                {%else%}
+                                <div class="col-md-4 box">
+                                    <div class="thumbnail">
+                                    <input id="checkbox" type="checkbox" value="{{pic.image}}" name="deleteList" form="deletePhoto">
+                                        <img src="/media/{{pic.image}}" alt="/media/{{pic.image}}" class="content-img">
+                                        <div class="caption"  style="text-align:center;">
+                                            <p>
+                                                <div class="labels-in-caption">
+                                                    {%if label0 != ''%}
+                                                        <span class="label label-primary img-labels">{{label0}}</span>
+                                                    {%endif%}                                
+                                                    {%if label1 != ''%}
+                                                        <span class="label label-primary img-labels">{{label1}}</span>
+                                                    {%endif%}                               
+                                                    {%if label2 != ''%}
+                                                        <span class="label label-primary img-labels">{{label2}}</span>
+                                                    {%endif%}
+                                                </div>
+                                            </p>
+                                            <div class="btn-group">
+                                                <button type="button" id = "{{pic.id}}" class="btn btn-default" name ="like-button">
+                                                    {%if is_liked == 1%}
+                                                        <span class="glyphicon glyphicon-heart" style="color:hotpink" aria-hidden="true">&nbsp;{{pic.likes}}</span>
+                                                    {%else%}
+                                                        <span class="glyphicon glyphicon-heart" aria-hidden="true"> {{pic.likes}}</span>
+                                                    {%endif%}
+                                                </button>
+                                                <button type="button" class="btn btn-default" name="favor-button" id = "{{pic.id}}">
+                                                    {%if is_favored == 1%}
+                                                        <span class='glyphicon glyphicon-ok' style='color:blue' aria-hidden='true'>&nbsp;favored</span>
+                                                    {%else%}
+                                                        <span class="glyphicon glyphicon-star" aria-hidden="true">&nbsp;favor</span>
+                                                    {%endif%}
+                                                </button>
+                                            </div>   
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                                {%endif%}
+                            {%endif%}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div><!-- /st-content-inner -->
+        </div><!-- /st-content -->
+    </div><!-- /st-pusher -->
+</div><!-- /st-container -->
+<script src="{% static 'sidebar/js/classie.js' %}"></script>
+<script src="{% static 'sidebar/js/sidebarEffects.js' %}"></script>
 
 {% include 'popup.html' %}
 
 <script src="{% static 'profile/popup.js' %}" type="text/javascript"></script>
+<script src="{% static 'profile/button.js' %}" type="text/javascript"></script>
 <script src="{% static 'like/like.js' %}" type="text/javascript"></script>
-
+<script src="{% static 'profile/button.js' %}" type="text/javascript"></script>
+<script type="text/javascript" src="{%static 'base/imagesloaded.pkgd.min.js'%}"></script>
+<script type="text/javascript" src="{%static 'base/masonry.pkgd.min.js'%}"></script>
+<script>
+$('#masonry').imagesLoaded(function() {
+$('#masonry').masonry({
+itemSelector: '.box',
+});
+});
+</script>
 {% endblock %}
+

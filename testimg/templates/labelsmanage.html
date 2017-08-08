@@ -1,0 +1,31 @@
+{% extends 'base_boot.html' %}
+{% block content %}
+{% load static %}
+<div class="container">
+{% include 'messages.html' %}
+<h2 align="center">Labels Manage</h2>
+<h3  align="left">Already Have Labels</h3>
+<div class="container" style="padding:50px 50px 50px 50px" >
+<form method="POST" action="{% url 'labelsmanage' %}">
+{% csrf_token %}
+{%for label in labels%}
+<div class="btn-group"style="margin-left:20px; margin-bottom:15px">
+    <button type="button" class="btn btn-default">{{label}}</button>
+    <button type="submit" name="{{label}}" class="btn btn-primary"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+</div>
+{%endfor%}
+</form>
+</div>
+
+<h3 align="left">Add Labels</h3>
+<form method="POST" action="{% url 'labelsmanage' %}"> 
+{% csrf_token %}
+<div class="input-group">
+  <span class="input-group-addon" id="basic-addon1"><span class ="glyphicon glyphicon-signal"></span></span>
+  <input type="text" class="form-control" placeholder="add your new label here..." name="newlabel"aria-describedby="basic-addon1">
+  <span class="input-group-btn">
+      <button class="btn btn-default" type="submit" name="createbutton">Create</button>
+  </span>
+</div>
+</form>
+{% endblock %}
